@@ -16,6 +16,14 @@ const nextConfig = {
   turbopack: {
     root: path.resolve(__dirname, "../.."),
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/auth/:path*",
+        destination: "/api/proxy/api/auth/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

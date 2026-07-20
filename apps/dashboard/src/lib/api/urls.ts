@@ -147,7 +147,7 @@ export function getApiOrigin(rawUrl?: string) {
 export function getAuthBaseUrl() {
   if (API_PROXY_ENABLED) {
     const origin = sameOriginProxyOrigin();
-    if (origin) return `${origin}/api/proxy/api/auth`;
+    if (origin) return `${origin}/api/auth`;
   }
   return `${getApiOrigin()}/api/auth`;
 }
@@ -182,4 +182,3 @@ export function getMarketingOrigin() {
   }
   return "https://openship.io";
 }
-

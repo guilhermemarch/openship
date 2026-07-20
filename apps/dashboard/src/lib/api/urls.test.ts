@@ -1,6 +1,28 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { alignLoopbackOrigin } from "./urls";
+
+const originalEnvironment = { ...process.env };
+
+afterEach(() => {
+  process.env = { ...originalEnvironment };
+  vi.resetModules();
+});
+
+describe("proxy auth URL", () => {
+  it("uses the public auth path that Next.js rewrites to the private API", async () => {
+    process.env = {
+      ...originalEnvironment,
+      NEXT_PUBLIC_API_PROXY: "true",
+      OPENSHIP_PUBLIC_URL: "https://openship.example.com",
+    };
+    vi.resetModules();
+
+    const { getAuthBaseUrl } = await import("./urls");
+
+    expect(getAuthBaseUrl()).toBe("https://openship.example.com/api/auth");
+  });
+});
 
 describe("alignLoopbackOrigin", () => {
   it("rewrites a 127.0.0.1 API origin when the page is served from localhost", () => {

@@ -53,7 +53,7 @@ describe("Railway control-plane platform resolution", () => {
 
     const { betterAuthBaseUrl, trustedOrigins } = await import("../../src/config/env");
 
-    expect(betterAuthBaseUrl).toBe("https://openship.example.com/api/proxy");
+    expect(betterAuthBaseUrl).toBe("https://openship.example.com");
     expect(trustedOrigins).toContain("https://openship.example.com");
   });
 });

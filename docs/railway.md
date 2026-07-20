@@ -34,12 +34,13 @@ DATABASE_URL=${{Postgres.DATABASE_URL}}
 REDIS_URL=${{Redis.REDIS_URL}}
 BETTER_AUTH_SECRET=<generated 32-byte-or-longer secret>
 INTERNAL_TOKEN=<generated 32-byte-or-longer secret>
-BETTER_AUTH_URL=https://${{dashboard.RAILWAY_PUBLIC_DOMAIN}}/api/proxy
+BETTER_AUTH_URL=https://${{dashboard.RAILWAY_PUBLIC_DOMAIN}}
 TRUST_PROXY=true
 ```
 
 `BETTER_AUTH_SECRET` and `INTERNAL_TOKEN` must be different random values. Do
-not reuse the examples from `.env.example`.
+not reuse the examples from `.env.example`. `BETTER_AUTH_URL` must contain only
+the dashboard origin; the dashboard rewrites `/api/auth/*` to the private API.
 
 ## Dashboard configuration
 

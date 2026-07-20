@@ -465,7 +465,7 @@ const extraTrustedOrigins = (env.OPENSHIP_EXTRA_TRUSTED_ORIGINS ?? "")
   .filter(Boolean);
 
 export const betterAuthBaseUrl =
-  env.BETTER_AUTH_URL?.replace(/\/+$/, "") ?? runtimeTarget.api;
+  new URL(env.BETTER_AUTH_URL ?? runtimeTarget.api).origin;
 const betterAuthOrigin = new URL(betterAuthBaseUrl).origin;
 
 export const trustedOrigins = [
