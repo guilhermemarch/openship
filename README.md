@@ -89,7 +89,7 @@ Works with **Openship Cloud** (managed) or **any Linux server** you own. Solo de
 | **Full backend** | Postgres, MySQL, MongoDB, Redis, workers, WebSockets, storage |
 | **Domains & SSL** | Automatic Let's Encrypt, wildcards, unlimited domains, auto-renewal |
 | **CDN** | Edge caching, HTTP/3, Brotli compression, instant purge |
-| **Mail server** | Built-in SMTP with DKIM/SPF/DMARC — no Mailgun or SES needed |
+| **Optional mail server** | Provision SMTP with DKIM/SPF/DMARC on a separate compatible Linux server |
 | **Backups** | Scheduled, databases + volumes, one-click restore, export anytime |
 | **Real-time monitoring** | Live build logs, container metrics, and resource usage streamed to your screen |
 | **Scaling** | Auto-scaling on cloud, multi-node ready on self-hosted |

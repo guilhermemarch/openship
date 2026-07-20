@@ -96,7 +96,7 @@ Use `projectUpdate` with name `OpenShip — Self-Hosted PaaS`, then read it back
 
 - [ ] **Step 2: Generate and publish the renamed template**
 
-Create a new template snapshot from production and publish it under category `Other` with the email-first description, README, and image URL.
+Create a new template snapshot from production and publish it under category `Automation` with a PaaS-first description that labels email infrastructure as optional, plus the README and image URL.
 
 - [ ] **Step 3: Verify marketplace metadata and URL**
 

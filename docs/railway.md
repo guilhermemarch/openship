@@ -23,7 +23,7 @@ to initialize Docker or OpenResty inside its Railway container. Add a separate
 Linux server in the OpenShip dashboard and deploy workloads to that server over
 SSH. Selecting the local Railway container as a workload target is unsupported.
 
-For email hosting, use a dedicated or clean Ubuntu 22.04/24.04 VPS with a stable
+For email hosting, use a dedicated or clean Ubuntu 24.04 VPS with a stable
 public IP, configurable reverse DNS/PTR, outbound TCP port 25, inbound mail
 ports, and DNS control for every hosted domain. OpenShip transfers its bundled
 `apps/email/engine` to that server and performs the resumable iRedMail setup

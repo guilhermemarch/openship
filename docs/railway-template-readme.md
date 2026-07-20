@@ -51,9 +51,9 @@ Provide at least one Linux VPS, dedicated server, or homelab host with:
 - Enough CPU, RAM, and disk for the workloads you plan to run
 - DNS control for application domains
 
-Email hosting additionally requires a dedicated or clean Ubuntu 22.04/24.04
-server, configurable reverse DNS/PTR, outbound TCP port 25, inbound mail ports,
-and an IP with suitable reputation.
+Email hosting additionally requires a dedicated or clean Ubuntu 24.04 server,
+configurable reverse DNS/PTR, outbound TCP port 25, inbound mail ports, and an
+IP with suitable reputation.
 
 ## Common Use Cases
 
