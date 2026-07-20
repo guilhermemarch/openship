@@ -1,5 +1,8 @@
 # Deploy OpenShip on Railway
 
+Use the published [OpenShip Railway template](https://railway.com/deploy/openship-template)
+or reproduce the configuration below manually.
+
 The Railway deployment runs OpenShip as an authenticated control plane. It is a
 four-service stack:
 
