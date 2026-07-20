@@ -11,12 +11,8 @@ COPY apps/ ./apps/
 
 # The build died in "Resolving dependencies" — bun's network metadata resolution
 # for the whole monorepo, slow enough to trip the build's idle timeout.
-# --frozen-lockfile skips resolution entirely (installs straight from bun.lock),
-# and the BuildKit cache mount reuses bun's download store across builds so a
-# rebuild doesn't re-fetch the graph. (Cache mount needs BuildKit — Compose v2
-# enables it by default.)
-RUN --mount=type=cache,id=openship-api-bun-cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile \
+# --frozen-lockfile skips resolution entirely and installs from bun.lock.
+RUN bun install --frozen-lockfile \
  && cd apps/api && bun run build
 
 # ─── Production stage ──────────────────────────────────

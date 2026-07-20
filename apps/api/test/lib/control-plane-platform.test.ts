@@ -9,12 +9,10 @@ afterEach(() => {
 });
 
 describe("Railway control-plane platform resolution", () => {
-  it("gives the BuildKit dependency cache a stable id", async () => {
+  it("avoids non-portable BuildKit cache flags", async () => {
     const dockerfile = await readFile(new URL("../../Dockerfile", import.meta.url), "utf8");
 
-    expect(dockerfile).toContain(
-      "--mount=type=cache,id=openship-api-bun-cache,target=/root/.bun/install/cache",
-    );
+    expect(dockerfile).not.toContain("--mount=type=cache");
   });
 
   it(
