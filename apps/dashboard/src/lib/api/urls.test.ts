@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { readFile } from "node:fs/promises";
 
 import { alignLoopbackOrigin } from "./urls";
 
@@ -10,6 +11,12 @@ afterEach(() => {
 });
 
 describe("proxy auth URL", () => {
+  it("makes the public proxy flag available to the Next.js Docker build", async () => {
+    const dockerfile = await readFile(new URL("../../../Dockerfile", import.meta.url), "utf8");
+
+    expect(dockerfile).toMatch(/ARG NEXT_PUBLIC_API_PROXY/);
+  });
+
   it("uses the public auth path that Next.js rewrites to the private API", async () => {
     process.env = {
       ...originalEnvironment,

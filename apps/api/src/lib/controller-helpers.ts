@@ -97,7 +97,7 @@ export { getPlatform as platform } from "@repo/adapters";
  * a 404-shaped error if it doesn't, to avoid leaking existence across
  * orgs (404, not 403 — IDOR-safe). NULL `organizationId` fails closed.
  */
-import { NotFoundError } from "@repo/core";
+import { NotFoundError, type DeployTarget } from "@repo/core";
 
 export function assertResourceInOrg<T extends { organizationId?: string | null }>(
   resource: T | null | undefined,
@@ -212,6 +212,20 @@ export function resolvePlatformConfig(): PlatformConfig {
     target: "selfhosted",
     runtime: env.DEPLOY_MODE === "bare" ? "bare" : "docker",
   };
+}
+
+/**
+ * Hosted control planes cannot run workloads in their own PaaS container.
+ * Require an explicitly registered SSH server before any runtime adapter is
+ * initialized, so a stale or crafted `deployTarget` cannot reach Docker or
+ * OpenResty on the API container.
+ */
+export function assertControlPlaneDeployTarget(target: DeployTarget): void {
+  if (env.OPENSHIP_CONTROL_PLANE_ONLY && target !== "server") {
+    throw new Error(
+      "Hosted control-plane deployments require a remote SSH server target.",
+    );
+  }
 }
 
 // ─── Project access ──────────────────────────────────────────────────────────

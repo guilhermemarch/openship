@@ -77,4 +77,24 @@ describe("Railway control-plane platform resolution", () => {
     expect(description).not.toContain("railway-user");
     expect(description).not.toContain("super-secret");
   });
+
+  it("rejects on-container deployments in hosted control-plane mode", async () => {
+    process.env = {
+      ...originalEnvironment,
+      NODE_ENV: "test",
+      DEPLOY_MODE: "docker",
+      OPENSHIP_CONTROL_PLANE_ONLY: "true",
+      INTERNAL_TOKEN: "test-internal-token-with-at-least-32-bytes",
+      BETTER_AUTH_SECRET: "test-better-auth-secret-with-at-least-32-bytes",
+    };
+    vi.resetModules();
+
+    const { assertControlPlaneDeployTarget } = await import(
+      "../../src/lib/controller-helpers"
+    );
+
+    expect(() => assertControlPlaneDeployTarget("local")).toThrow(/remote SSH server/i);
+    expect(() => assertControlPlaneDeployTarget("cloud")).toThrow(/remote SSH server/i);
+    expect(() => assertControlPlaneDeployTarget("server")).not.toThrow();
+  });
 });

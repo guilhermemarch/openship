@@ -8,12 +8,11 @@
  * via this proxy.
  *
  * Contract:
- *   - Method, headers, body, query-string forwarded verbatim
+ *   - Method, body, and query-string forwarded; unsafe headers sanitized
  *   - `Host` rewritten to the upstream's host (HTTP/1.1 requires it)
  *   - Hop-by-hop headers stripped per RFC 7230 §6.1
  *   - Response body STREAMED back (SSE / chunked text / large blobs work)
- *   - Bidirectional `X-Forwarded-*` so the upstream sees the original
- *     client (rate limiting, audit logs) instead of just loopback
+ *   - Trusted edge `X-Forwarded-*` metadata rebuilt for rate limiting and audit
  *
  * Activated by `NEXT_PUBLIC_API_PROXY=true`; the routing code in
  * apps/dashboard/src/lib/api/urls.ts already lives behind the same flag.
@@ -26,24 +25,7 @@
  */
 
 import type { NextRequest } from "next/server";
-
-// Hop-by-hop headers — MUST NOT be forwarded by a proxy.
-// Per RFC 7230 §6.1 (HTTP/1.1) — Next.js's fetch automatically handles
-// content-encoding / transfer-encoding on the OUTGOING request, so any
-// of these surviving from the inbound request would corrupt the upstream.
-const HOP_BY_HOP_HEADERS = new Set([
-  "connection",
-  "keep-alive",
-  "proxy-authenticate",
-  "proxy-authorization",
-  "te",
-  "trailer",
-  "transfer-encoding",
-  "upgrade",
-  "host",
-  // Length is computed by fetch from the actual body it's sending
-  "content-length",
-]);
+import { buildForwardedHeaders } from "./forwarded-headers";
 
 // Strip these from the upstream RESPONSE before relaying — they're set
 // by the runtime (fetch + edge) and forwarding stale values causes
@@ -70,36 +52,6 @@ function buildUpstreamUrl(req: NextRequest, pathSegments: string[]): URL {
   // Preserve original query string verbatim.
   url.search = new URL(req.url).search;
   return url;
-}
-
-function buildForwardedHeaders(req: NextRequest, upstream: URL): Headers {
-  const out = new Headers();
-  for (const [name, value] of req.headers) {
-    if (HOP_BY_HOP_HEADERS.has(name.toLowerCase())) continue;
-    out.set(name, value);
-  }
-  // Tell the upstream the original client info — for audit logs +
-  // rate-limit middleware that uses c.var.clientIp (rate-limiter.ts
-  // already accepts loopback peers, but a real X-Forwarded-For makes
-  // the rate-limit key match the actual client).
-  const xff = req.headers.get("x-forwarded-for");
-  const clientIp = req.headers.get("x-real-ip") ?? (req as unknown as { ip?: string }).ip ?? "";
-  if (clientIp && !xff) {
-    out.set("x-forwarded-for", clientIp);
-  }
-  if (clientIp) {
-    out.set("x-real-ip", clientIp);
-  }
-  // Original protocol + host so Better Auth's cookie-domain logic
-  // sees the public-facing scheme/host (not loopback).
-  const proto = req.headers.get("x-forwarded-proto") ?? new URL(req.url).protocol.replace(":", "");
-  const host = req.headers.get("x-forwarded-host") ?? new URL(req.url).host;
-  out.set("x-forwarded-proto", proto);
-  out.set("x-forwarded-host", host);
-  // Override Host so HTTP/1.1 routing on the upstream points at the
-  // upstream's authority, not the original public host.
-  out.set("host", upstream.host);
-  return out;
 }
 
 /**

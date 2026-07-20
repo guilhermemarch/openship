@@ -12,7 +12,7 @@ import type { DeployTarget, RuntimeMode } from "@repo/core";
 import { env } from "../config";
 import { cloudClient, getOrgCloudToken } from "./cloud/client";
 import { resolveOrgCloudUserId } from "./cloud/transport";
-import { platform } from "./controller-helpers";
+import { assertControlPlaneDeployTarget, platform } from "./controller-helpers";
 import { buildSshConfig, sshManager } from "./ssh-manager";
 import { createProvisionLock } from "./provision-lock";
 
@@ -167,6 +167,7 @@ export async function resolveDeploymentPlatform(
 ): Promise<ResolvedDeploymentPlatform> {
   const basePlatform = opts?.basePlatform ?? platform();
   const effectiveTarget = resolveEffectiveTarget(basePlatform.target, snapshot);
+  assertControlPlaneDeployTarget(effectiveTarget);
   const runtimeMode = snapshot.runtimeMode ?? (basePlatform.runtime.name === "docker" ? "docker" : "bare");
 
   if (effectiveTarget === "local" || effectiveTarget === "server") {

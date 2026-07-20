@@ -7,6 +7,8 @@ COPY tsconfig.base.json ./
 COPY packages/ ./packages/
 COPY apps/ ./apps/
 
+ARG NEXT_PUBLIC_API_PROXY=false
+ENV NEXT_PUBLIC_API_PROXY=$NEXT_PUBLIC_API_PROXY
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN bun install && cd apps/dashboard && bun run build
 
