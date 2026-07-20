@@ -1,8 +1,8 @@
-# OpenShip Mail Template Branding Implementation Plan
+# OpenShip PaaS Template Branding Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Publish a clearly branded Railway template for OpenShip's self-hosted, multi-domain email control plane without advertising a mail installer that is absent from the production API image.
+**Goal:** Publish a clearly branded Railway template for OpenShip's self-hosted PaaS, presenting multi-domain email as one optional capability rather than the product identity.
 
 **Architecture:** Railway continues to host the dashboard, API, Postgres, and Redis. The API image also ships OpenShip's slim iRedMail engine and transfers it over SSH to a separately registered Linux mail server. A versioned marketplace image in the public fork provides a stable URL for the Railway card.
 
@@ -12,7 +12,7 @@
 
 - Keep Railway as the authenticated control plane; never claim the Railway container is the SMTP/IMAP host.
 - Require a separate Linux VPS with SSH, a public IP, working reverse DNS, and mail ports.
-- Use the marketplace name `OpenShip Mail Server` and explain multi-domain email in the first sentence.
+- Use the marketplace name `OpenShip — Self-Hosted PaaS` and lead with application deployment.
 - Preserve the existing four-service Railway topology and generated secrets.
 
 ---
@@ -43,20 +43,20 @@ Copy the builder's `apps/email/engine` directory to the same path in the runner 
 
 Run the focused test, `bun run --cwd apps/api lint`, and `bun run --cwd apps/api build`. Expect all to pass.
 
-### Task 2: Publish honest email-first branding
+### Task 2: Publish honest PaaS-first branding
 
 **Files:**
-- Add: `docs/assets/openship-mail-template.png`
+- Add: `docs/assets/openship-template.png`
 - Modify: `docs/railway-template-readme.md`
 - Modify: `docs/railway.md`
 
 **Interfaces:**
 - Consumes: generated 16:9 marketplace artwork
-- Produces: stable raw GitHub image URL and an email-first Railway overview
+- Produces: stable raw GitHub image URL and a PaaS-first Railway overview
 
 - [ ] **Step 1: Rewrite the template overview**
 
-Lead with multi-domain mailboxes, aliases, SMTP/IMAP, DKIM/SPF/DMARC, backups, and webmail. State clearly that the external VPS runs the mail stack.
+Lead with applications, containers, CI/CD, domains, backups, and external Linux servers. Present multi-domain email as an optional feature.
 
 - [ ] **Step 2: Update the operator guide**
 
@@ -88,11 +88,11 @@ Check `/register`, `/api/proxy/api/health`, and `/api/auth/get-session` for succ
 
 **Interfaces:**
 - Consumes: the healthy Railway production environment and public raw image URL
-- Produces: a published `OpenShip Mail Server` listing with a new share URL
+- Produces: a published `OpenShip — Self-Hosted PaaS` listing with a new share URL
 
 - [ ] **Step 1: Rename the source Railway project**
 
-Use `projectUpdate` with name `OpenShip Mail Server`, then read it back.
+Use `projectUpdate` with name `OpenShip — Self-Hosted PaaS`, then read it back.
 
 - [ ] **Step 2: Generate and publish the renamed template**
 

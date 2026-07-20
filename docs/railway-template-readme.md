@@ -1,74 +1,79 @@
-# OpenShip Mail Server
+# OpenShip — Self-Hosted PaaS
 
-Run an authenticated control plane on Railway for self-hosted, multi-domain
-email. OpenShip provisions and manages the actual mail stack on a separate
-Linux VPS over SSH.
+Run the OpenShip control plane on Railway and deploy applications, databases,
+workers, Docker Compose stacks, and optional multi-domain email infrastructure
+to Linux servers you control.
 
-## What You Get
+## What OpenShip Does
 
-- Multiple email domains on one mail server
-- Mailboxes, aliases, forwarding, quotas, and account controls
-- SMTP with Postfix and IMAP with Dovecot
-- DKIM, SPF, DMARC, TLS, anti-spam, antivirus, and fail2ban
-- DNS guidance and delivery tests from the dashboard
-- Mailbox backups, restore, and server migration workflows
-- Optional Zero Email webmail
-- The broader OpenShip application deployment platform
+OpenShip is an open-source deployment platform with a web dashboard, CLI, REST
+API, and built-in CI/CD. Connect a repository, choose a registered server, and
+manage the deployment lifecycle from one place.
+
+- Deploy Node.js, Python, Go, Rust, PHP, Ruby, Java, .NET, and Docker projects
+- Run existing Docker Compose stacks and monorepos
+- Manage environment variables, domains, TLS, logs, metrics, and rollbacks
+- Provision databases, Redis, workers, WebSockets, and persistent volumes
+- Schedule backups and restore databases or volumes
+- Operate multiple Linux servers from one authenticated dashboard
+- Optionally provision multi-domain email with SMTP, IMAP, DKIM/SPF/DMARC,
+  mailboxes, aliases, quotas, backups, and webmail
 
 ## How the Railway Architecture Works
 
 Railway hosts the OpenShip **control plane**:
 
 - Public Next.js dashboard
-- Private Hono API with the bundled slim iRedMail provisioning engine
+- Private Hono API and background jobs
 - Persistent Railway PostgreSQL for OpenShip state and authentication
 - Persistent Railway Redis for queues, cache, and rate limiting
 
-The SMTP/IMAP server does **not** run inside Railway. OpenShip connects to a
-separate Linux VPS over SSH and installs the mail services, mail database,
-certificates, and storage there. This separation gives the mail server its own
-public IP, reverse DNS, raw mail ports, and persistent Maildir storage.
+Application and email workloads do **not** run inside the Railway control-plane
+containers. OpenShip connects over SSH to one or more external Linux servers,
+where it manages Docker, routing, certificates, application data, and optional
+mail services. The backend enforces this separation and rejects local workload
+deployments in hosted control-plane mode.
 
-## External Mail Server Requirements
+## External Server Requirements
 
-Before installing mail, provide a dedicated or clean Ubuntu 22.04/24.04 server
-with:
+Provide at least one Linux VPS, dedicated server, or homelab host with:
 
 - Root or passwordless-sudo SSH access
-- A stable public IPv4 address
-- Reverse DNS/PTR that you can configure
-- Outbound TCP port 25 permitted by the VPS provider
-- Inbound ports 25, 465/587, and 993 available
-- Control of DNS for the primary and additional email domains
+- A stable reachable IP address
+- Enough CPU, RAM, and disk for the workloads you plan to run
+- DNS control for application domains
 
-Your VPS provider and IP reputation materially affect deliverability. Railway
-manages the control plane lifecycle; it cannot guarantee inbox placement.
+Email hosting additionally requires a dedicated or clean Ubuntu 22.04/24.04
+server, configurable reverse DNS/PTR, outbound TCP port 25, inbound mail ports,
+and an IP with suitable reputation.
 
-## Multi-Domain Model
+## Common Use Cases
 
-The first domain establishes the shared mail hostname, such as
-`mail.example.com`. Additional domains keep independent mailboxes and DNS
-identity while using that same SMTP/IMAP endpoint. OpenShip generates the MX,
-SPF, DKIM, and DMARC records each domain needs.
+- Replace per-service PaaS costs with applications consolidated on your VPS
+- Give a small team a shared deployment interface without broad SSH access
+- Manage staging and production servers from one control plane
+- Operate client infrastructure for an agency
+- Deploy side projects, internal tools, APIs, workers, and Compose stacks
+- Add self-hosted multi-domain email when the infrastructure requirements fit
 
 ## After Deployment
 
 1. Open the generated dashboard domain.
 2. Register the first administrator with email and password.
-3. Add the external Linux server and verify its SSH connection.
-4. Open **Emails**, choose the server, and run the resumable mail setup.
-5. Publish the DNS records shown by OpenShip and configure reverse DNS.
-6. Create mailboxes or add more domains, then run the delivery test.
+3. Add an external Linux server and verify its SSH connection.
+4. Connect a repository or import a Docker Compose project.
+5. Select the registered server and deploy.
+6. Optionally open **Emails** to provision a separate mail-capable server.
 
-Email/password login to the OpenShip dashboard works without external SMTP.
-GitHub OAuth, Google OAuth, and notification SMTP are optional integrations.
+Email/password login to the dashboard works immediately. GitHub OAuth, Google
+OAuth, and notification SMTP are optional integrations.
 
 ## Cost and Responsibility
 
-The template creates four Railway services and their persistent database
-volumes. You also pay your chosen VPS provider for the external mail server.
-You remain responsible for DNS, reverse DNS, IP reputation, abuse prevention,
-updates, storage capacity, and off-server backups.
+The template creates four Railway services and persistent PostgreSQL/Redis
+volumes. External workload servers are billed separately by your chosen
+provider. You remain responsible for server capacity, operating-system updates,
+DNS, firewall policy, abuse prevention, and off-server backups.
 
 See `docs/railway.md` in the source repository for variables, networking, and
 operational details.
