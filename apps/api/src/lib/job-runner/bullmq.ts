@@ -23,6 +23,15 @@ import type { JobRunner } from "./types";
 const Q_RUN = "backup-run";
 const Q_RECURRING = "backup-recurring";
 
+function redisEndpointLabel(redisUrl: string): string {
+  try {
+    const parsed = new URL(redisUrl);
+    return parsed.port ? `${parsed.hostname}:${parsed.port}` : parsed.hostname;
+  } catch {
+    return "configured endpoint";
+  }
+}
+
 export class BullMQJobRunner implements JobRunner {
   readonly name = "bullmq" as const;
 
@@ -179,6 +188,6 @@ export class BullMQJobRunner implements JobRunner {
   }
 
   describe(): string {
-    return `bullmq (Redis @ ${env.REDIS_URL})`;
+    return `bullmq (Redis @ ${redisEndpointLabel(env.REDIS_URL)})`;
   }
 }

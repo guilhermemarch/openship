@@ -59,4 +59,22 @@ describe("Railway control-plane platform resolution", () => {
     expect(betterAuthIpAddressHeaders).toEqual(["x-forwarded-for", "x-real-ip"]);
     expect(trustedOrigins).toContain("https://openship.example.com");
   });
+
+  it("does not expose Redis credentials in the job runner description", async () => {
+    process.env = {
+      ...originalEnvironment,
+      NODE_ENV: "test",
+      INTERNAL_TOKEN: "test-internal-token-with-at-least-32-bytes",
+      BETTER_AUTH_SECRET: "test-better-auth-secret-with-at-least-32-bytes",
+      REDIS_URL: "redis://railway-user:super-secret@redis.internal:6379/0",
+    };
+    vi.resetModules();
+
+    const { BullMQJobRunner } = await import("../../src/lib/job-runner/bullmq");
+    const description = new BullMQJobRunner().describe();
+
+    expect(description).toContain("redis.internal:6379");
+    expect(description).not.toContain("railway-user");
+    expect(description).not.toContain("super-secret");
+  });
 });
