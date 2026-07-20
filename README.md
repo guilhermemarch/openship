@@ -64,7 +64,7 @@ deployment described in [docs/railway.md](docs/railway.md). Railway hosts the
 dashboard, API, Postgres, and Redis; deployed workloads run on a separate Linux
 server connected to OpenShip over SSH.
 
-[Deploy the OpenShip control plane on Railway](https://railway.com/deploy/openship-template)
+[Deploy OpenShip — Self-Hosted PaaS on Railway](https://railway.com/deploy/openship-self-hosted-paas)
 
 Or grab the desktop app (`openship install`, or download from [openship.io](https://openship.io)).
 

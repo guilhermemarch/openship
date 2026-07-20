@@ -1,10 +1,10 @@
-# OpenShip — Self-Hosted PaaS
+# Deploy and Host OpenShip
 
-Run the OpenShip control plane on Railway and deploy applications, databases,
-workers, Docker Compose stacks, and optional multi-domain email infrastructure
-to Linux servers you control.
+Deploy **OpenShip — Self-Hosted PaaS** on Railway and manage applications,
+databases, workers, Docker Compose stacks, and optional multi-domain email
+infrastructure on Linux servers you control.
 
-## What OpenShip Does
+## Why Deploy OpenShip on Railway
 
 OpenShip is an open-source deployment platform with a web dashboard, CLI, REST
 API, and built-in CI/CD. Connect a repository, choose a registered server, and
@@ -19,7 +19,7 @@ manage the deployment lifecycle from one place.
 - Optionally provision multi-domain email with SMTP, IMAP, DKIM/SPF/DMARC,
   mailboxes, aliases, quotas, backups, and webmail
 
-## How the Railway Architecture Works
+## About Hosting OpenShip
 
 Railway hosts the OpenShip **control plane**:
 
@@ -34,7 +34,15 @@ where it manages Docker, routing, certificates, application data, and optional
 mail services. The backend enforces this separation and rejects local workload
 deployments in hosted control-plane mode.
 
-## External Server Requirements
+## Dependencies for OpenShip
+
+### Deployment Dependencies
+
+The template creates a dashboard, API, persistent Railway PostgreSQL, and
+persistent Railway Redis. Workloads require at least one external Linux server
+registered over SSH.
+
+### External Server Requirements
 
 Provide at least one Linux VPS, dedicated server, or homelab host with:
 

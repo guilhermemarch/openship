@@ -1,6 +1,6 @@
 # Deploy OpenShip on Railway
 
-Use the published [OpenShip Railway template](https://railway.com/deploy/openship-template)
+Use the published [OpenShip — Self-Hosted PaaS template](https://railway.com/deploy/openship-self-hosted-paas)
 or reproduce the configuration below manually.
 
 The Railway deployment runs OpenShip as an authenticated control plane. The API
