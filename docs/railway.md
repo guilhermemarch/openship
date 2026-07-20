@@ -3,8 +3,10 @@
 Use the published [OpenShip Railway template](https://railway.com/deploy/openship-template)
 or reproduce the configuration below manually.
 
-The Railway deployment runs OpenShip as an authenticated control plane. It is a
-four-service stack:
+The Railway deployment runs OpenShip as an authenticated control plane. The API
+image includes the slim iRedMail provisioning engine, but the live SMTP/IMAP
+stack always runs on an external Linux server. Railway provides a four-service
+control plane:
 
 | Service     | Source                      | Purpose                                                   |
 | ----------- | --------------------------- | --------------------------------------------------------- |
@@ -20,6 +22,12 @@ The API therefore runs with `OPENSHIP_CONTROL_PLANE_ONLY=true`: it does not try
 to initialize Docker or OpenResty inside its Railway container. Add a separate
 Linux server in the OpenShip dashboard and deploy workloads to that server over
 SSH. Selecting the local Railway container as a workload target is unsupported.
+
+For email hosting, use a dedicated or clean Ubuntu 22.04/24.04 VPS with a stable
+public IP, configurable reverse DNS/PTR, outbound TCP port 25, inbound mail
+ports, and DNS control for every hosted domain. OpenShip transfers its bundled
+`apps/email/engine` to that server and performs the resumable iRedMail setup
+over SSH.
 
 ## API configuration
 

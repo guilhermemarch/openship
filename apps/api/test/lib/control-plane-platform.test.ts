@@ -15,6 +15,17 @@ describe("Railway control-plane platform resolution", () => {
     expect(dockerfile).not.toContain("--mount=type=cache");
   });
 
+  it("ships the mail provisioning engine in the production API image", async () => {
+    const dockerfile = await readFile(new URL("../../Dockerfile", import.meta.url), "utf8");
+
+    expect(dockerfile).toContain(
+      "COPY --from=builder /app/apps/email/engine ./apps/email/engine",
+    );
+    expect(dockerfile).toContain(
+      "ENV MAIL_SERVER_ENGINE_DIR=/app/apps/email/engine",
+    );
+  });
+
   it(
     "skips local infrastructure without enabling desktop authentication",
     async () => {

@@ -35,7 +35,9 @@ COPY --from=builder /app/package.json /app/bun.lock /app/pnpm-workspace.yaml /ap
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api ./apps/api
+COPY --from=builder /app/apps/email/engine ./apps/email/engine
 
 ENV NODE_ENV=production
+ENV MAIL_SERVER_ENGINE_DIR=/app/apps/email/engine
 EXPOSE 4000
 CMD ["bun", "run", "apps/api/dist/index.js"]
