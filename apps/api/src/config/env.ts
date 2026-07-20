@@ -68,9 +68,17 @@ const envSchema = z.object({
    *   - "desktop"           → Bare runtime, no routing/SSL (desktop app)
    */
   DEPLOY_MODE: z.enum(["docker", "bare", "cloud", "desktop"]).default("docker"),
+  /**
+   * Run the authenticated API as a hosted control plane without initializing
+   * Docker/OpenResty on the API container itself. Deployments must target a
+   * separately registered SSH server. This is intended for PaaS hosts such as
+   * Railway, where the host Docker socket is deliberately unavailable.
+   */
+  OPENSHIP_CONTROL_PLANE_ONLY: envBool("false"),
 
   /* ---------- Auth (Better Auth) ---------- */
   BETTER_AUTH_SECRET: z.string().default(DEFAULT_BETTER_AUTH_SECRET),
+  BETTER_AUTH_URL: z.url().optional(),
   BETTER_AUTH_COOKIE_DOMAIN: z.string().optional(),
   /**
    * Gate that ENABLES the option to toggle `authMode → "none"` (zero-auth)
@@ -456,10 +464,15 @@ const extraTrustedOrigins = (env.OPENSHIP_EXTRA_TRUSTED_ORIGINS ?? "")
   .map((o) => o.trim())
   .filter(Boolean);
 
+export const betterAuthBaseUrl =
+  env.BETTER_AUTH_URL?.replace(/\/+$/, "") ?? runtimeTarget.api;
+const betterAuthOrigin = new URL(betterAuthBaseUrl).origin;
+
 export const trustedOrigins = [
   ...new Set([
     runtimeTarget.dashboard,
     runtimeTarget.api,
+    betterAuthOrigin,
     ...extraTrustedOrigins,
     ...(env.NODE_ENV === "production"
       ? []

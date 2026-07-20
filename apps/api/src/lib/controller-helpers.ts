@@ -199,6 +199,10 @@ export function resolvePlatformConfig(): PlatformConfig {
     };
   }
 
+  if (env.OPENSHIP_CONTROL_PLANE_ONLY) {
+    return { target: "desktop" };
+  }
+
   if (env.DEPLOY_MODE === "desktop") {
     return { target: "desktop" };
   }

@@ -6,7 +6,7 @@ import { organization } from "better-auth/plugins/organization";
 import { defaultStatements } from "better-auth/plugins/organization/access";
 import { createAccessControl } from "better-auth/plugins/access";
 import { db, getDriver, repos, schema } from "@repo/db";
-import { env, runtimeTarget, trustedOrigins } from "../config/env";
+import { betterAuthBaseUrl, env, runtimeTarget, trustedOrigins } from "../config/env";
 import { sendMail, smtpEnabled, requireEmailVerificationStrict } from "./mail";
 import {
   resetPasswordEmail,
@@ -93,7 +93,7 @@ const useSessionCookieCache = getDriver() !== "pglite";
 
 export const auth = betterAuth({
   basePath: "/api/auth",
-  baseURL: runtimeTarget.api,
+  baseURL: betterAuthBaseUrl,
 
   database: drizzleAdapter(db, {
     provider: "pg",

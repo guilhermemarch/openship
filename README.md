@@ -59,6 +59,11 @@ cp .env.example .env
 docker compose up -d
 ```
 
+To host the authenticated control plane on Railway, use the multi-service
+deployment described in [docs/railway.md](docs/railway.md). Railway hosts the
+dashboard, API, Postgres, and Redis; deployed workloads run on a separate Linux
+server connected to OpenShip over SSH.
+
 Or grab the desktop app (`openship install`, or download from [openship.io](https://openship.io)).
 
 ---
