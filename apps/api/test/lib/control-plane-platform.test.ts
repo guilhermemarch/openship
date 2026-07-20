@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { readFile } from "node:fs/promises";
 
 const originalEnvironment = { ...process.env };
 
@@ -8,6 +9,14 @@ afterEach(() => {
 });
 
 describe("Railway control-plane platform resolution", () => {
+  it("gives the BuildKit dependency cache a stable id", async () => {
+    const dockerfile = await readFile(new URL("../../Dockerfile", import.meta.url), "utf8");
+
+    expect(dockerfile).toContain(
+      "--mount=type=cache,id=openship-api-bun-cache,target=/root/.bun/install/cache",
+    );
+  });
+
   it(
     "skips local infrastructure without enabling desktop authentication",
     async () => {
