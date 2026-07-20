@@ -6,7 +6,13 @@ import { organization } from "better-auth/plugins/organization";
 import { defaultStatements } from "better-auth/plugins/organization/access";
 import { createAccessControl } from "better-auth/plugins/access";
 import { db, getDriver, repos, schema } from "@repo/db";
-import { betterAuthBaseUrl, env, runtimeTarget, trustedOrigins } from "../config/env";
+import {
+  betterAuthBaseUrl,
+  betterAuthIpAddressHeaders,
+  env,
+  runtimeTarget,
+  trustedOrigins,
+} from "../config/env";
 import { sendMail, smtpEnabled, requireEmailVerificationStrict } from "./mail";
 import {
   resetPasswordEmail,
@@ -259,6 +265,9 @@ export const auth = betterAuth({
   /* ---------- Advanced ---------- */
   advanced: {
     cookiePrefix: COOKIE_PREFIX,
+    ...(betterAuthIpAddressHeaders
+      ? { ipAddress: { ipAddressHeaders: betterAuthIpAddressHeaders } }
+      : {}),
     ...(sharedCookieDomain
       ? {
           crossSubDomainCookies: {

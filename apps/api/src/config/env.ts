@@ -466,6 +466,9 @@ const extraTrustedOrigins = (env.OPENSHIP_EXTRA_TRUSTED_ORIGINS ?? "")
 
 export const betterAuthBaseUrl =
   new URL(env.BETTER_AUTH_URL ?? runtimeTarget.api).origin;
+export const betterAuthIpAddressHeaders = env.TRUST_PROXY
+  ? ["x-forwarded-for", "x-real-ip"]
+  : undefined;
 const betterAuthOrigin = new URL(betterAuthBaseUrl).origin;
 
 export const trustedOrigins = [

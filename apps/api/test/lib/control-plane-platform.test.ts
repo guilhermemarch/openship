@@ -48,12 +48,15 @@ describe("Railway control-plane platform resolution", () => {
       INTERNAL_TOKEN: "test-internal-token-with-at-least-32-bytes",
       BETTER_AUTH_SECRET: "test-better-auth-secret-with-at-least-32-bytes",
       BETTER_AUTH_URL: "https://openship.example.com/api/proxy/",
+      TRUST_PROXY: "true",
     };
     vi.resetModules();
 
-    const { betterAuthBaseUrl, trustedOrigins } = await import("../../src/config/env");
+    const { betterAuthBaseUrl, betterAuthIpAddressHeaders, trustedOrigins } =
+      await import("../../src/config/env");
 
     expect(betterAuthBaseUrl).toBe("https://openship.example.com");
+    expect(betterAuthIpAddressHeaders).toEqual(["x-forwarded-for", "x-real-ip"]);
     expect(trustedOrigins).toContain("https://openship.example.com");
   });
 });
